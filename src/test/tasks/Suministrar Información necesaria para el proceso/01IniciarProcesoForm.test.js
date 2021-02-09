@@ -1,5 +1,6 @@
 const {
   areDatesWrong,
+  getGrades,
 } = require('../../../tasks/Suministrar Información necesaria para el proceso/01IniciarProcesoForm');
 
 describe('Tests inside 01IniciarProcesoForm.js file', () => {
@@ -25,6 +26,67 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
     test('When there is no date given, should return false', () => {
       const noDatesResult = areDatesWrong();
       expect(noDatesResult).toBe(false);
+    });
+  });
+
+  describe('Cases inside getGrades method', () => {
+    const resultStudents = [
+      ['Nombres', 'Apellidos', 'Ciclo', 'Paralelo', 'Correo', 'Nota'],
+      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon@unl.edu.ec', '9.99'],
+      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon1@unl.edu.ec', '9.99'],
+      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon2@unl.edu.ec', '9.99'],
+      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon3@unl.edu.ec', '9.99'],
+      ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto@unl.edu.ec', '9.99'],
+      ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto1@unl.edu.ec', '9.99'],
+    ];
+
+    test('When Students csv is valid and We have data inside resultStudents, should return an array with all grades inside', () => {
+      const isStudentsCsvInvalid = false;
+      const grades = getGrades(isStudentsCsvInvalid, resultStudents);
+
+      expect(grades).not.toBeNull();
+      expect(grades).toHaveLength(2);
+    });
+
+    test('When entering 4 students with the same parallel and grade number, should return an object with the property students with the same amount(4)', () => {
+      const isStudentsCsvInvalid = false;
+      const grades = getGrades(isStudentsCsvInvalid, resultStudents);
+
+      const [firstGrade, secondGrade] = grades;
+      expect(firstGrade.students).toHaveLength(4);
+      expect(secondGrade.students).toHaveLength(2);
+    });
+
+    test('When isStudentsCsvInvalid is True, should return null', () => {
+      const isStudentsCsvInvalid = true;
+      const grades = getGrades(isStudentsCsvInvalid, resultStudents);
+
+      expect(grades).toBeNull();
+    });
+
+    test('When resultStudents is null or undefined, should return null', () => {
+      const isStudentsCsvInvalid = false;
+
+      const grades = getGrades(isStudentsCsvInvalid, undefined || null);
+
+      expect(grades).toBeNull();
+    });
+
+    test('When entering an empty elements at the first position inside resultStudents, should return an array without taking into account this elements', () => {
+      const isStudentsCsvInvalid = false;
+      const amountOfRowsNotTakingIntoAccount = 1;
+      const initLenght = resultStudents.length - amountOfRowsNotTakingIntoAccount;
+      resultStudents.push([''], [''], ['']);
+
+      const grades = getGrades(isStudentsCsvInvalid, resultStudents);
+
+      let amountOfStudents = 0;
+
+      grades.forEach((grade) => {
+        amountOfStudents += grade.students.length;
+      });
+
+      expect(amountOfStudents).toBe(initLenght);
     });
   });
 });
