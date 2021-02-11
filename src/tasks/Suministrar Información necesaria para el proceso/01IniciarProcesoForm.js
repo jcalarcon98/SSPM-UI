@@ -66,7 +66,25 @@ function getGrades(isStudentsCsvInvalid, resultStudents) {
 
   return grades;
 }
+/**
+ * Verify if manager email contains unl domain.
+ * @param  {string} managerEmail - Institutional email of the degree manager.
+ * @returns {boolean} - if manager email does not contains unl domain returns true else false;
+ */
+function isManagerEmailIncorrect(managerEmail) {
+  if (managerEmail.length > 10) {
+    const unlDomain = '@unl.edu.ec';
+
+    const catchDomainOnManagerEmail = managerEmail.substr(managerEmail.length - unlDomain.length);
+
+    return catchDomainOnManagerEmail !== unlDomain;
+  }
+
+  return false;
+}
+
 module.exports = {
   areDatesWrong,
   getGrades,
+  isManagerEmailIncorrect,
 };

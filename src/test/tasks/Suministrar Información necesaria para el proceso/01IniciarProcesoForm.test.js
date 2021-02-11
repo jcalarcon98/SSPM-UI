@@ -1,6 +1,7 @@
 const {
   areDatesWrong,
   getGrades,
+  isManagerEmailIncorrect,
 } = require('../../../tasks/Suministrar Información necesaria para el proceso/01IniciarProcesoForm');
 
 describe('Tests inside 01IniciarProcesoForm.js file', () => {
@@ -87,6 +88,30 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
       });
 
       expect(amountOfStudents).toBe(initLenght);
+    });
+  });
+
+  describe('Cases inside isManagerEmailIncorrect method', () => {
+    test('When manager email contains unl domain, should return false', () => {
+      const managerEmail = 'jean.alarcon@unl.edu.ec';
+
+      const isEmailIncorrect = isManagerEmailIncorrect(managerEmail);
+
+      expect(isEmailIncorrect).toBe(false);
+    });
+
+    test('When manager email not contains unl domain, should return true', () => {
+      const managerEmail = 'jean.alarcon@gmail.com';
+
+      const isEmailIncorrect = isManagerEmailIncorrect(managerEmail);
+
+      expect(isEmailIncorrect).toBe(true);
+    });
+
+    test('When manager email size is lower than 10 characters, should return false', () => {
+      const isEmailIncorrect = isManagerEmailIncorrect('nomatter');
+
+      expect(isEmailIncorrect).toBe(false);
     });
   });
 });
