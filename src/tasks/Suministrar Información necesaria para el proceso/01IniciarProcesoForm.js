@@ -377,6 +377,7 @@ function areEnoughStudentsToRateSyllabus(grades) {
 
 /**
  * Update grades with syllabuses with the corresponding syllabuses.
+ * Variable in UI Designer - <b>updateGrades</b>
  * @param {Object[]} grades - Grades of current degree.
  * @param {string[]} resultSyllabuses - Results Syllabus CSV File.
  * @returns {Object[]} updatedGrades with that syllabuses.
