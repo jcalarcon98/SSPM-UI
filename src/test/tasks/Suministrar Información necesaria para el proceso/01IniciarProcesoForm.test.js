@@ -1,3 +1,4 @@
+const { all } = require('underscore');
 const {
   areDatesWrong,
   getGrades,
@@ -5,6 +6,7 @@ const {
   verifyCorrectRate,
   compareSizeContent,
   compareContent,
+  compareUniqueStudentByEmail,
 } = require('../../../tasks/Suministrar Información necesaria para el proceso/01IniciarProcesoForm');
 
 describe('Tests inside 01IniciarProcesoForm.js file', () => {
@@ -207,6 +209,22 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
       const isContentCorrect = compareContent(resultStudents);
 
       expect(isContentCorrect).toBe(true);
+    });
+  });
+
+  describe('Cases inside compareUniqueStudentByEmail method', () => {
+    test('When two rows or more contains the same email at position 4, should retun false', () => {
+      resultStudents.push(['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'jean.alarcon3@unl.edu.ec', '9.99']);
+
+      const areAllStudentsUnique = compareUniqueStudentByEmail(resultStudents);
+
+      expect(areAllStudentsUnique).toBe(false);
+    });
+
+    test('When in all rows the email is different, should return true', () => {
+      const areAllStudentsUnique = compareUniqueStudentByEmail(resultStudents);
+
+      expect(areAllStudentsUnique).toBe(true);
     });
   });
 });

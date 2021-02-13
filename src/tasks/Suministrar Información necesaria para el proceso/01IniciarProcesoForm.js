@@ -172,6 +172,33 @@ function compareContent(array) {
   }
   return true;
 }
+/**
+ * Verify if in all rows the same email does not repeat.
+ * Variable in UI Designer - <b>isStudentsCsvInvalid</b>
+ * @param  {Object[]} array - Results of CSV file
+ * @returns {boolean}  if student email doesn't repeat en each row returns true else fasle.
+ */
+function compareUniqueStudentByEmail(array) {
+  const isCorrect = true;
+
+  const emailDefaultPosition = 4;
+
+  for (let init = 1; init < array.length; init += 1) {
+    const correo = array[init][emailDefaultPosition];
+
+    for (let initInside = 1; initInside < array.length; initInside += 1) {
+      if (init !== initInside) {
+        const correoInside = array[initInside][emailDefaultPosition];
+
+        if (correo === correoInside) {
+          return false;
+        }
+      }
+    }
+  }
+  return isCorrect;
+}
+
 module.exports = {
   areDatesWrong,
   getGrades,
@@ -179,4 +206,5 @@ module.exports = {
   verifyCorrectRate,
   compareSizeContent,
   compareContent,
+  compareUniqueStudentByEmail,
 };
