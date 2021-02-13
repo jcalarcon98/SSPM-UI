@@ -228,7 +228,7 @@ function compareUniqueSyllabusDenominationOnEachGrade(array) {
   return isCorrect;
 }
 /**
- * Order correctly the grades for the purpose to these grades.
+ * Order correctly the grades for the purpose to show these grades.
  * @param  {Object[]} array - Results of Syllabus CSV file.
  * @retuns {Object[]} array - Results of syllabus CSV file ordered.
  */
@@ -282,6 +282,64 @@ function syllabusContent(array) {
 
   return sillabusToShow;
 }
+/**
+ * Order correctly the students fot the purpose to show these students
+ * @param  {Object[]} array - Results of students CSV file
+ * @returns {Object[]} array - Results of students csv file ordered.
+ */
+function studentsContent(array) {
+  let studentsShow = [];
+  let results = array;
+
+  results = results.filter((result) => result[0] !== '');
+
+  for (let init = 1; init < results.length; init += 1) {
+    const currentStudentShow = {
+      name: results[init][0],
+      lastName: results[init][1],
+      cicle: parseInt(results[init][2], 10),
+      parallel: results[init][3],
+      email: results[init][4],
+      rate: results[init][5],
+    };
+
+    studentsShow.push(currentStudentShow);
+  }
+
+  const finalArray = [];
+
+  const sortedStudentsByGrade = _.sortBy(studentsShow, 'cicle');
+
+  let { cicle: initGrade } = sortedStudentsByGrade[0];
+
+  let initArray = [];
+
+  for (let init = 0; init < sortedStudentsByGrade.length; init += 1) {
+    const { cicle: currentGradeShow } = sortedStudentsByGrade[init];
+
+    if (currentGradeShow !== initGrade) {
+      initArray = _.sortBy(initArray, 'parallel');
+
+      finalArray.push(initArray);
+
+      initGrade = currentGradeShow;
+
+      initArray = [];
+
+      initArray.push(sortedStudentsByGrade[init]);
+    } else {
+      initArray.push(sortedStudentsByGrade[init]);
+    }
+
+    if (init + 1 === sortedStudentsByGrade.length) {
+      initArray = _.sortBy(initArray, 'parallel');
+      finalArray.push(initArray);
+    }
+  }
+
+  studentsShow = finalArray;
+  return studentsShow;
+}
 
 module.exports = {
   areDatesWrong,
@@ -293,4 +351,5 @@ module.exports = {
   compareUniqueStudentByEmail,
   compareUniqueSyllabusDenominationOnEachGrade,
   syllabusContent,
+  studentsContent,
 };

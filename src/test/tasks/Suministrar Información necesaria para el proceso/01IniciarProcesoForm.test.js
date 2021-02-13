@@ -8,6 +8,7 @@ const {
   compareUniqueStudentByEmail,
   compareUniqueSyllabusDenominationOnEachGrade,
   syllabusContent,
+  studentsContent,
 } = require('../../../tasks/Suministrar Información necesaria para el proceso/01IniciarProcesoForm');
 
 describe('Tests inside 01IniciarProcesoForm.js file', () => {
@@ -298,6 +299,32 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
         } else {
           expect(syllabusesToShow[index].cicle).toBe(secondGrade.grade);
           expect(syllabusesToShow[index].parallel).toBe(secondGrade.parallel);
+        }
+      }
+    });
+  });
+
+  describe('Cases inside studentsContent method', () => {
+    test('When provided correctly studentsFile, should return an order students array', () => {
+      const firstGrade = {
+        grade: 10,
+        parallel: 'A',
+      };
+
+      const secondGrade = {
+        grade: 10,
+        parallel: 'B',
+      };
+
+      const [studentsToShow] = studentsContent(resultStudents);
+
+      for (let index = 0; index < studentsToShow.length; index += 1) {
+        if (index < 4) {
+          expect(studentsToShow[index].cicle).toBe(firstGrade.grade);
+          expect(studentsToShow[index].parallel).toBe(firstGrade.parallel);
+        } else {
+          expect(studentsToShow[index].cicle).toBe(secondGrade.grade);
+          expect(studentsToShow[index].parallel).toBe(secondGrade.parallel);
         }
       }
     });
