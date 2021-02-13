@@ -9,6 +9,7 @@ const {
   compareUniqueSyllabusDenominationOnEachGrade,
   syllabusContent,
   studentsContent,
+  areEnoughStudentsToRateSyllabus,
 } = require('../../../tasks/Suministrar Información necesaria para el proceso/01IniciarProcesoForm');
 
 describe('Tests inside 01IniciarProcesoForm.js file', () => {
@@ -327,6 +328,87 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
           expect(studentsToShow[index].parallel).toBe(secondGrade.parallel);
         }
       }
+    });
+  });
+
+  describe('Cases inside areEnoughStudentsToRateSyllabus method', () => {
+    let grades = [];
+
+    beforeEach(() => {
+      grades = [
+        {
+          number: 10,
+          parallel: 'B',
+          students: [
+            {
+              name: 'Jean Carlos',
+              email: 'jean.alarcon@unl.edu.ec',
+            },
+            {
+              name: 'Vanessa Nicole',
+              email: 'vanessa.iniguez@unl.edu.ec',
+            },
+          ],
+          syllabuses: [
+            {
+              denomination: 'Control Automatizado',
+            },
+            {
+              denomination: 'Sistemas Expertos',
+            },
+          ],
+        },
+        {
+          number: 10,
+          parallel: 'A',
+          students: [
+            {
+              name: 'Jean Carlos',
+              email: 'jean.alarcon1@unl.edu.ec',
+            },
+            {
+              name: 'Vanessa Nicole',
+              email: 'vanessa.iniguez1@unl.edu.ec',
+            },
+          ],
+          syllabuses: [
+            {
+              denomination: 'Control Automatizado',
+            },
+            {
+              denomination: 'Sistemas Expertos',
+            },
+          ],
+        },
+      ];
+    });
+
+    test('When we have the same amount of students and syllabuses, should return false', () => {
+      const areEnoughStudents = areEnoughStudentsToRateSyllabus(grades);
+      expect(areEnoughStudents.isCorrect).toBeFalsy();
+    });
+
+    test('When we have 3 more students that syllabuses for each grade, should return true', () => {
+      const additionalSudents = [
+        {
+          name: 'Juanito Peréz',
+          email: 'juanito.perez@unl.edu.ec',
+        },
+        {
+          name: 'Gilberto Ramiréz',
+          email: 'gilberto.ramirez@unl.edu.ec',
+        },
+        {
+          name: 'Patricia Pucha',
+          email: 'patricia.pucha@unl.edu.ec',
+        },
+      ];
+
+      grades[0].students = [...grades[0].students, ...additionalSudents];
+      grades[1].students = [...grades[1].students, ...additionalSudents];
+
+      const areEnoughStudents = areEnoughStudentsToRateSyllabus(grades);
+      expect(areEnoughStudents).toBe(true);
     });
   });
 });

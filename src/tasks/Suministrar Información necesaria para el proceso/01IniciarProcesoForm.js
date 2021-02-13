@@ -342,6 +342,66 @@ function studentsContent(array) {
   studentsShow = finalArray;
   return studentsShow;
 }
+/**
+ * Verifies that there are the required number of students for each cycle.
+ * Always for each cycle there must be 3 more students than the number of syllabuses.
+ * @param  {} grades
+ */
+function areEnoughStudentsToRateSyllabus(grades) {
+  const amountOfAdditionalStudentsPerGrade = 3;
+  let areWrongParallels = false;
+
+  let wrongParallels = '';
+
+  for (const grade of grades) {
+    if (grade.students.length !== (grade.syllabuses.length + amountOfAdditionalStudentsPerGrade)) {
+      areWrongParallels = true;
+      wrongParallels += `Ciclo: ${grade.number} Paralelo: "${grade.parallel}" \n`;
+    }
+  }
+
+  if (areWrongParallels) {
+    return {
+      isCorrect: false,
+      message: `<b>Error</b>: Asegurese que exista 3 estudiantes más que la cantidad de sílabos por cada ciclo\n
+      Los siguientes ciclos no cumplen esa característica:\n
+      ${wrongParallels}`,
+    };
+  }
+
+  return true;
+}
+
+function updateGrades(grades, resultSyllabuses) {
+  const updatedGrades = grades;
+  const results = resultSyllabuses.filter((result) => result[0] !== '');
+
+  for (let init = 1; init < results.length; init += 1) {
+    const currentGradeNumber = parseInt(results[init][2], 10);
+    const currentParallel = results[init][3];
+
+    const currentSillabus = {
+      persistenceId_string: '',
+      denomination: results[init][0],
+      teacher: {
+        name: results[init][1],
+      },
+    };
+
+    for (let iteratorGrade = 0; iteratorGrade < updatedGrades.length; iteratorGrade += 1) {
+      const grade = updatedGrades[iteratorGrade];
+      /**
+       * If the syllabus row contains the same parallel and the same number grade, it will
+       * push to syllabus inside that grade.
+       */
+      if (grade.number === currentGradeNumber && grade.parallel === currentParallel) {
+        grade.syllabuses.push(currentSillabus);
+      }
+    }
+  }
+
+  return updatedGrades;
+}
 
 module.exports = {
   areDatesWrong,
@@ -354,4 +414,6 @@ module.exports = {
   compareUniqueSyllabusDenominationOnEachGrade,
   syllabusContent,
   studentsContent,
+  areEnoughStudentsToRateSyllabus,
+  updateGrades,
 };
