@@ -344,8 +344,11 @@ function studentsContent(array) {
 }
 /**
  * Verifies that there are the required number of students for each cycle.
+ * Variable in UI Designer - <b>updateGrades</b>
  * Always for each cycle there must be 3 more students than the number of syllabuses.
- * @param  {} grades
+ * @param  {Object[]} grades - Grades of current degree.
+ * @returns { boolean | Object } -> If everything is correct return true else,
+ * return an object with message anf false.
  */
 function areEnoughStudentsToRateSyllabus(grades) {
   const amountOfAdditionalStudentsPerGrade = 3;
@@ -372,6 +375,12 @@ function areEnoughStudentsToRateSyllabus(grades) {
   return true;
 }
 
+/**
+ * Update grades with syllabuses with the corresponding syllabuses.
+ * @param {Object[]} grades - Grades of current degree.
+ * @param {string[]} resultSyllabuses - Results Syllabus CSV File.
+ * @returns {Object[]} updatedGrades with that syllabuses.
+ */
 function updateGrades(grades, resultSyllabuses) {
   const updatedGrades = grades;
   const results = resultSyllabuses.filter((result) => result[0] !== '');

@@ -10,6 +10,7 @@ const {
   syllabusContent,
   studentsContent,
   areEnoughStudentsToRateSyllabus,
+  updateGrades,
 } = require('../../../tasks/Suministrar Información necesaria para el proceso/01IniciarProcesoForm');
 
 describe('Tests inside 01IniciarProcesoForm.js file', () => {
@@ -409,6 +410,52 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
 
       const areEnoughStudents = areEnoughStudentsToRateSyllabus(grades);
       expect(areEnoughStudents).toBe(true);
+    });
+  });
+
+  describe('Cases inside updateGrades method', () => {
+    let grades = [];
+
+    beforeEach(() => {
+      grades = [
+        {
+          number: 10,
+          parallel: 'B',
+          students: [
+            {
+              name: 'Jean Carlos',
+              email: 'jean.alarcon@unl.edu.ec',
+            },
+            {
+              name: 'Vanessa Nicole',
+              email: 'vanessa.iniguez@unl.edu.ec',
+            },
+          ],
+          syllabuses: [],
+        },
+        {
+          number: 10,
+          parallel: 'A',
+          students: [
+            {
+              name: 'Jean Carlos',
+              email: 'jean.alarcon1@unl.edu.ec',
+            },
+            {
+              name: 'Vanessa Nicole',
+              email: 'vanessa.iniguez1@unl.edu.ec',
+            },
+          ],
+          syllabuses: [],
+        },
+      ];
+    });
+
+    test('When result syllabuses CSV file has 10 syllabuses, 5 for cicle: 10 - A and five for cicle: 10 - B, should retun that grdes with that amunt of syllabuses', () => {
+      const [firstGrade, secondGrade] = updateGrades(grades, resultSyllabuses);
+
+      expect(firstGrade.syllabuses).toHaveLength(5);
+      expect(secondGrade.syllabuses).toHaveLength(5);
     });
   });
 });
