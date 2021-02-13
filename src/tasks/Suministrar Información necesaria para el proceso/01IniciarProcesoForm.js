@@ -175,7 +175,7 @@ function compareContent(array) {
 /**
  * Verify if in all rows the same email does not repeat.
  * Variable in UI Designer - <b>isStudentsCsvInvalid</b>
- * @param  {Object[]} array - Results of CSV file
+ * @param  {Object[]} array - Results of Students CSV file
  * @returns {boolean}  if student email doesn't repeat en each row returns true else fasle.
  */
 function compareUniqueStudentByEmail(array) {
@@ -198,6 +198,90 @@ function compareUniqueStudentByEmail(array) {
   }
   return isCorrect;
 }
+/**
+ * Verify if in the same grade inside Syllabus CSV file the syllabus denomination doesn't repeat
+ * Variable in UI Designer - <b>isSyllabusCsvInvalid</b>
+ * @param  {Object} array - Results of Syllabus CSV file
+ * @returns {boolean} if syllabus denomination doesn't repeat in the same grade
+ * returns true else false.
+ */
+function compareUniqueSyllabusDenominationOnEachGrade(array) {
+  const isCorrect = true;
+
+  for (let init = 1; init < array.length; init += 1) {
+    const [denomination, , cicle, parallel] = array[init];
+
+    for (let initInside = 0; initInside < array.length; initInside += 1) {
+      if (init !== initInside) {
+        const [denominationInside, , cicleInside, parallelInside] = array[initInside];
+
+        const areDenominationEqual = denomination === denominationInside;
+        const areCicleEqual = cicle === cicleInside;
+        const areParallelEqual = parallel === parallelInside;
+
+        if (areDenominationEqual && areCicleEqual && areParallelEqual) {
+          return false;
+        }
+      }
+    }
+  }
+  return isCorrect;
+}
+/**
+ * Order correctly the grades for the purpose to these grades.
+ * @param  {Object[]} array - Results of Syllabus CSV file.
+ * @retuns {Object[]} array - Results of syllabus CSV file ordered.
+ */
+function syllabusContent(array) {
+  let sillabusToShow = [];
+  let results = array;
+
+  results = results.filter((result) => result[0] !== '');
+
+  for (let init = 1; init < results.length; init += 1) {
+    const currentSillabusShow = {
+      name: results[init][0],
+      teacher: results[init][1],
+      cicle: parseInt(results[init][2], 10),
+      parallel: results[init][3],
+    };
+
+    sillabusToShow.push(currentSillabusShow);
+  }
+
+  const finalArray = [];
+
+  const sortedSillabusByGrade = _.sortBy(sillabusToShow, 'cicle');
+
+  let { cicle: initGrade } = sortedSillabusByGrade[0];
+
+  let initArray = [];
+
+  for (let init = 0; init < sortedSillabusByGrade.length; init += 1) {
+    const { cicle: currentGrade } = sortedSillabusByGrade[init];
+
+    if (currentGrade !== initGrade) {
+      initArray = _.sortBy(initArray, 'parallel');
+      finalArray.push(initArray);
+
+      initGrade = currentGrade;
+
+      initArray = [];
+
+      initArray.push(sortedSillabusByGrade[init]);
+    } else {
+      initArray.push(sortedSillabusByGrade[init]);
+    }
+
+    if (init + 1 === sortedSillabusByGrade.length) {
+      initArray = _.sortBy(initArray, 'parallel');
+      finalArray.push(initArray);
+    }
+  }
+  sillabusToShow = [...finalArray];
+
+  return sillabusToShow;
+}
 
 module.exports = {
   areDatesWrong,
@@ -207,4 +291,6 @@ module.exports = {
   compareSizeContent,
   compareContent,
   compareUniqueStudentByEmail,
+  compareUniqueSyllabusDenominationOnEachGrade,
+  syllabusContent,
 };

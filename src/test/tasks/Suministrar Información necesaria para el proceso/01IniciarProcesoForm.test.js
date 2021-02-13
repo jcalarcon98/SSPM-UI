@@ -1,4 +1,3 @@
-const { all } = require('underscore');
 const {
   areDatesWrong,
   getGrades,
@@ -7,11 +6,13 @@ const {
   compareSizeContent,
   compareContent,
   compareUniqueStudentByEmail,
+  compareUniqueSyllabusDenominationOnEachGrade,
+  syllabusContent,
 } = require('../../../tasks/Suministrar Información necesaria para el proceso/01IniciarProcesoForm');
 
 describe('Tests inside 01IniciarProcesoForm.js file', () => {
   let resultStudents = [];
-
+  let resultSyllabuses = [];
   beforeEach(() => {
     resultStudents = [
       ['Nombres', 'Apellidos', 'Ciclo', 'Paralelo', 'Correo', 'Nota'],
@@ -21,6 +22,20 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
       ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon3@unl.edu.ec', '9.99'],
       ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto@unl.edu.ec', '9.99'],
       ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto1@unl.edu.ec', '9.99'],
+    ];
+
+    resultSyllabuses = [
+      ['Denominacion', 'Docente', 'Ciclo', 'Paralelo'],
+      ['Ingeniería de Software 1', 'Oscar Cumbicus', 10, 'B'],
+      ['Contabilidad', 'César Fernando Iñiguez Pineda', 10, 'B'],
+      ['Control Automatizado Asistido por computador', 'César Fernando Iñiguez Pineda', 10, 'A'],
+      ['Sistemas Expertos', 'Oscar Cumbicus', 10, 'A'],
+      ['Ingeniería de Software 1', 'Oscar Cumbicus', 10, 'A'],
+      ['Contabilidad', 'César Fernando Iñiguez Pineda', 10, 'A'],
+      ['Control Automatizado Asistido por computador', 'César Fernando Iñiguez Pineda', 10, 'B'],
+      ['Sistemas Expertos', 'Oscar Cumbicus', 10, 'B'],
+      ['Ingeniería de Software', 'César Fernando Iñiguez Pineda', 10, 'B'],
+      ['Ingeniería de Software', 'César Fernando Iñiguez Pineda', 10, 'A'],
     ];
   });
 
@@ -225,6 +240,66 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
       const areAllStudentsUnique = compareUniqueStudentByEmail(resultStudents);
 
       expect(areAllStudentsUnique).toBe(true);
+    });
+  });
+
+  describe('Cases inside compareUniqueSyllabusDenominationOnEachGrade method', () => {
+    let syllabuses = [];
+
+    beforeEach(() => {
+      syllabuses = [
+        ['Denominacion', 'Docente', 'Ciclo', 'Paralelo'],
+        ['Ingeniería de Software 1', 'Oscar Cumbicus', 10, 'B'],
+        ['Contabilidad', 'César Fernando Iñiguez Pineda', 10, 'B'],
+        ['Control Automatizado Asistido por computador', 'César Fernando Iñiguez Pineda', 10, 'A'],
+        ['Sistemas Expertos', 'Oscar Cumbicus', 10, 'A'],
+        ['Ingeniería de Software 1', 'Oscar Cumbicus', 10, 'A'],
+        ['Contabilidad', 'César Fernando Iñiguez Pineda', 10, 'A'],
+        ['Control Automatizado Asistido por computador', 'César Fernando Iñiguez Pineda', 10, 'B'],
+        ['Sistemas Expertos', 'Oscar Cumbicus', 10, 'B'],
+        ['Ingeniería de Software', 'César Fernando Iñiguez Pineda', 10, 'B'],
+        ['Ingeniería de Software', 'César Fernando Iñiguez Pineda', 10, 'A'],
+      ];
+    });
+
+    test('When same denomination syllabuses repeat in the same grade, should return false', () => {
+      syllabuses.push(['Ingeniería de Software', 'César Fernando Iñiguez Pineda', 10, 'A']);
+
+      const isSyllabusCorrect = compareUniqueSyllabusDenominationOnEachGrade(syllabuses);
+
+      expect(isSyllabusCorrect).toBe(false);
+    });
+
+    test('When denomination syllabus are unique in the same grade, should return true', () => {
+      const isSyllabusCorrect = compareUniqueSyllabusDenominationOnEachGrade(syllabuses);
+
+      expect(isSyllabusCorrect).toBe(true);
+    });
+  });
+
+  describe('Cases inside syllabusContent method', () => {
+    test('When provided correctly syllabusFile, should return an order syllabuses array', () => {
+      const firstGrade = {
+        grade: 10,
+        parallel: 'A',
+      };
+
+      const secondGrade = {
+        grade: 10,
+        parallel: 'B',
+      };
+
+      const [syllabusesToShow] = syllabusContent(resultSyllabuses);
+
+      for (let index = 0; index < syllabusesToShow.length; index += 1) {
+        if (index < syllabusesToShow.length / 2) {
+          expect(syllabusesToShow[index].cicle).toBe(firstGrade.grade);
+          expect(syllabusesToShow[index].parallel).toBe(firstGrade.parallel);
+        } else {
+          expect(syllabusesToShow[index].cicle).toBe(secondGrade.grade);
+          expect(syllabusesToShow[index].parallel).toBe(secondGrade.parallel);
+        }
+      }
     });
   });
 });
