@@ -87,6 +87,7 @@ function isManagerEmailIncorrect(managerEmail) {
 }
 /**
  * Verify if the student rate is a valid number.
+ * Variable in UI Designer - <b>isStudentsCsvInvalid</b>
  * @param  {number} rate
  * @returns {boolean} if rate is a valid number returns true else false.
  */
@@ -99,10 +100,37 @@ function verifyCorrectRate(rate) {
 
   return !Number.isNaN(currentRate);
 }
+/**
+ * Verify if each row inside Students CSV file contains only the amount of required parameters(6)
+ * @param  {Object[]} array - Results of CSV file
+ * @returns {boolean} if any row contains more or less parameters should return false else true
+ */
+function compareSizeContent(array) {
+  const parametersSize = 6;
+
+  let isCorrect = true;
+  for (let init = 0; init < array.length; init += 1) {
+    const currentArray = array[init];
+    if (currentArray.length !== 1 && currentArray.length !== parametersSize) {
+      isCorrect = false;
+      return isCorrect;
+    }
+
+    if (currentArray.length === 1) {
+      const [element] = currentArray;
+      if (element !== '') {
+        isCorrect = false;
+        return isCorrect;
+      }
+    }
+  }
+  return isCorrect;
+}
 
 module.exports = {
   areDatesWrong,
   getGrades,
   isManagerEmailIncorrect,
   verifyCorrectRate,
+  compareSizeContent,
 };

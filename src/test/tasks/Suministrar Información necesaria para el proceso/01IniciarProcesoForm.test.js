@@ -3,18 +3,23 @@ const {
   getGrades,
   isManagerEmailIncorrect,
   verifyCorrectRate,
+  compareSizeContent,
 } = require('../../../tasks/Suministrar Información necesaria para el proceso/01IniciarProcesoForm');
 
 describe('Tests inside 01IniciarProcesoForm.js file', () => {
-  const resultStudents = [
-    ['Nombres', 'Apellidos', 'Ciclo', 'Paralelo', 'Correo', 'Nota'],
-    ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon@unl.edu.ec', '9.99'],
-    ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon1@unl.edu.ec', '9.99'],
-    ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon2@unl.edu.ec', '9.99'],
-    ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon3@unl.edu.ec', '9.99'],
-    ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto@unl.edu.ec', '9.99'],
-    ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto1@unl.edu.ec', '9.99'],
-  ];
+  let resultStudents = [];
+
+  beforeEach(() => {
+    resultStudents = [
+      ['Nombres', 'Apellidos', 'Ciclo', 'Paralelo', 'Correo', 'Nota'],
+      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon@unl.edu.ec', '9.99'],
+      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon1@unl.edu.ec', '9.99'],
+      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon2@unl.edu.ec', '9.99'],
+      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon3@unl.edu.ec', '9.99'],
+      ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto@unl.edu.ec', '9.99'],
+      ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto1@unl.edu.ec', '9.99'],
+    ];
+  });
 
   describe('Cases inside areDatesWrong method', () => {
     test('When end Date is greater than initDate, should return false', () => {
@@ -137,6 +142,38 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
       const isRateCorrect = verifyCorrectRate();
 
       expect(isRateCorrect).toBe(false);
+    });
+  });
+
+  describe('Cases inside compareSizeContent method', () => {
+    test('When Students CSV file is correctly entered, should return true', () => {
+      const isSizeContentCorrect = compareSizeContent(resultStudents);
+
+      expect(isSizeContentCorrect).toBe(true);
+    });
+
+    test('When Students CSV file is correctly entered but with empty array in one row, should return true', () => {
+      resultStudents.push(['']);
+
+      const isSizeContentCorrect = compareSizeContent(resultStudents);
+
+      expect(isSizeContentCorrect).toBe(true);
+    });
+
+    test('When Students CSV file is incorrectly entered (One field more on any row), should return false', () => {
+      resultStudents.push(['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'nomatter@unl.edu.ec', '9.99', 'OTRO VALOR']);
+
+      const isSizeContentCorrect = compareSizeContent(resultStudents);
+
+      expect(isSizeContentCorrect).toBe(false);
+    });
+
+    test('When Students CSV file is incorrectly entered (One field less on any row), should return false', () => {
+      resultStudents.push(['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'nomatter@unl.edu.ec']);
+
+      const isSizeContentCorrect = compareSizeContent(resultStudents);
+
+      expect(isSizeContentCorrect).toBe(false);
     });
   });
 });
