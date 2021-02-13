@@ -229,6 +229,7 @@ function compareUniqueSyllabusDenominationOnEachGrade(array) {
 }
 /**
  * Order correctly the grades for the purpose to show these grades.
+ * Variable in UI Designer - <b>syllabusContent</b>
  * @param  {Object[]} array - Results of Syllabus CSV file.
  * @retuns {Object[]} array - Results of syllabus CSV file ordered.
  */
@@ -284,6 +285,7 @@ function syllabusContent(array) {
 }
 /**
  * Order correctly the students fot the purpose to show these students
+ * Variable in UI Designer - <b>studentsContent</b>
  * @param  {Object[]} array - Results of students CSV file
  * @returns {Object[]} array - Results of students csv file ordered.
  */
