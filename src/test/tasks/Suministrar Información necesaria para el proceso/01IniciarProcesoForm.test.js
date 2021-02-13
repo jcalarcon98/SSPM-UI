@@ -4,6 +4,7 @@ const {
   isManagerEmailIncorrect,
   verifyCorrectRate,
   compareSizeContent,
+  compareContent,
 } = require('../../../tasks/Suministrar Información necesaria para el proceso/01IniciarProcesoForm');
 
 describe('Tests inside 01IniciarProcesoForm.js file', () => {
@@ -174,6 +175,38 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
       const isSizeContentCorrect = compareSizeContent(resultStudents);
 
       expect(isSizeContentCorrect).toBe(false);
+    });
+  });
+
+  describe('Cases inside compareContent method', () => {
+    test('When on any row at 4 position contains a email without UNL domain, should return false', () => {
+      resultStudents.push(['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'nomatter@gmail.com', '9.99']);
+
+      const isContentCorrect = compareContent(resultStudents);
+
+      expect(isContentCorrect).toBe(false);
+    });
+
+    test('When on any row at position 2 contains a grade number not accepted, should return false', () => {
+      const unAcceptedGradeNumber = '12';
+      resultStudents.push(['Edgar Andŕes', 'Soto Rodriguez', unAcceptedGradeNumber, 'B', 'nomatter@gmail.com', '9.99']);
+      const isContentCorrect = compareContent(resultStudents);
+
+      expect(isContentCorrect).toBe(false);
+    });
+
+    test('When on any row at position 3 contains a grade parallel not accepted, should return false', () => {
+      const unAcceptedGradeParallel = 'H';
+      resultStudents.push(['Edgar Andŕes', 'Soto Rodriguez', '12', unAcceptedGradeParallel, 'nomatter@gmail.com', '9.99']);
+      const isContentCorrect = compareContent(resultStudents);
+
+      expect(isContentCorrect).toBe(false);
+    });
+
+    test('When all information is correct, should return true', () => {
+      const isContentCorrect = compareContent(resultStudents);
+
+      expect(isContentCorrect).toBe(true);
     });
   });
 });

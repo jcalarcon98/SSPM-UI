@@ -102,6 +102,7 @@ function verifyCorrectRate(rate) {
 }
 /**
  * Verify if each row inside Students CSV file contains only the amount of required parameters(6)
+ * Variable in UI Designer - <b>isStudentsCsvInvalid</b>
  * @param  {Object[]} array - Results of CSV file
  * @returns {boolean} if any row contains more or less parameters should return false else true
  */
@@ -126,11 +127,56 @@ function compareSizeContent(array) {
   }
   return isCorrect;
 }
+/**
+ * Verify if each row inside Students CSV file contains the required parameters.
+ * Variable in UI Designer - <b>isStudentsCsvInvalid</b>
+ * @param {String[]} array
+ * @param {string} array[].firstParameterInArray - Student last names
+ * @param {string} array[].secondParameterInArray - Student names
+ * @param {string} array[].thirdParameterInArray - Student grade number, permited numbers [1..10]
+ * @param {string} array[].fourthParametserInArray - Student grade parallel,
+ * permited parallels [A,..D]
+ * @param {string} array[].fifthParameterInArray - Student email
+ * @param {string} array[].sixthParameterInArray - Student rate
+ * @returns {boolean} if all information is correct return true else false.
+ */
+function compareContent(array) {
+  const unlDomain = '@unl.edu.ec';
+  const permitedGrades = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+  const permitedParallels = ['A', 'B', 'C', 'D'];
 
+  for (let init = 1; init < array.length; init += 1) {
+    const currentArray = array[init];
+    const currentGrade = currentArray[2];
+    const currentParallel = currentArray[3];
+    const currentEmail = currentArray[4];
+    const currentRate = currentArray[5];
+
+    const unlDomainSize = currentEmail.length - unlDomain.length;
+    const catchUnlDomainOnCurrentEmail = currentEmail.substr(unlDomainSize);
+
+    if (catchUnlDomainOnCurrentEmail !== unlDomain) {
+      return false;
+    }
+    if (!permitedGrades.includes(currentGrade)) {
+      return false;
+    }
+
+    if (!permitedParallels.includes(currentParallel)) {
+      return false;
+    }
+
+    if (!verifyCorrectRate(currentRate)) {
+      return false;
+    }
+  }
+  return true;
+}
 module.exports = {
   areDatesWrong,
   getGrades,
   isManagerEmailIncorrect,
   verifyCorrectRate,
   compareSizeContent,
+  compareContent,
 };
