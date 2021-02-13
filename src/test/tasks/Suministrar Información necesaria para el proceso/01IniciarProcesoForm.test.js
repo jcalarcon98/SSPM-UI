@@ -2,9 +2,20 @@ const {
   areDatesWrong,
   getGrades,
   isManagerEmailIncorrect,
+  verifyCorrectRate,
 } = require('../../../tasks/Suministrar Información necesaria para el proceso/01IniciarProcesoForm');
 
 describe('Tests inside 01IniciarProcesoForm.js file', () => {
+  const resultStudents = [
+    ['Nombres', 'Apellidos', 'Ciclo', 'Paralelo', 'Correo', 'Nota'],
+    ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon@unl.edu.ec', '9.99'],
+    ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon1@unl.edu.ec', '9.99'],
+    ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon2@unl.edu.ec', '9.99'],
+    ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon3@unl.edu.ec', '9.99'],
+    ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto@unl.edu.ec', '9.99'],
+    ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto1@unl.edu.ec', '9.99'],
+  ];
+
   describe('Cases inside areDatesWrong method', () => {
     test('When end Date is greater than initDate, should return false', () => {
       const initDate = new Date();
@@ -31,16 +42,6 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
   });
 
   describe('Cases inside getGrades method', () => {
-    const resultStudents = [
-      ['Nombres', 'Apellidos', 'Ciclo', 'Paralelo', 'Correo', 'Nota'],
-      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon@unl.edu.ec', '9.99'],
-      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon1@unl.edu.ec', '9.99'],
-      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon2@unl.edu.ec', '9.99'],
-      ['Jean Carlos', 'Alarcón Ochoa', '10', 'A', 'jean.alarcon3@unl.edu.ec', '9.99'],
-      ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto@unl.edu.ec', '9.99'],
-      ['Edgar Andŕes', 'Soto Rodriguez', '10', 'B', 'edgar.soto1@unl.edu.ec', '9.99'],
-    ];
-
     test('When Students csv is valid and We have data inside resultStudents, should return an array with all grades inside', () => {
       const isStudentsCsvInvalid = false;
       const grades = getGrades(isStudentsCsvInvalid, resultStudents);
@@ -112,6 +113,30 @@ describe('Tests inside 01IniciarProcesoForm.js file', () => {
       const isEmailIncorrect = isManagerEmailIncorrect('nomatter');
 
       expect(isEmailIncorrect).toBe(false);
+    });
+  });
+
+  describe('Cases inside verifyCorrectRate method', () => {
+    test('When invalid number is provided, should return false', () => {
+      const invalidNumber = '9.99SADAS';
+
+      const isRateCorrect = verifyCorrectRate(invalidNumber);
+
+      expect(isRateCorrect).toBe(false);
+    });
+
+    test('When valid number is provided, should return true', () => {
+      const invalidNumber = '9.99';
+
+      const isRateCorrect = verifyCorrectRate(invalidNumber);
+
+      expect(isRateCorrect).toBe(true);
+    });
+
+    test('When number is not provided, should return false', () => {
+      const isRateCorrect = verifyCorrectRate();
+
+      expect(isRateCorrect).toBe(false);
     });
   });
 });

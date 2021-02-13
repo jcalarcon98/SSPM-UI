@@ -4,9 +4,10 @@
  * @author Jean Carlos Alarcón <jeancalarcon98@gmail.com>
  * @author Edgar Andrés Soto <edgar.soto@unl.edu.ec>
  */
-
+const _ = require('underscore');
 /**
  * Function to verify if the endDate of the period is greater than the period initDate
+ * Variable in UI Designer - <b>areDatesWrong</b>
  * @param  {Date} initDate - The start date of the period.
  * @param  {Date} endDate - The end date of the period.
  * @returns {boolean} - If endDate is greater than initDate should return false, else true
@@ -21,6 +22,7 @@ function areDatesWrong(initDate, endDate) {
 }
 /**
  * Get all grades inside CSV file.
+ * Variable in UI Designer - <b>grades</b>
  * @param  {boolean} isStudentsCsvInvalid - Indicates if the Students CSV is Invalid.
  * @param  {Object[]} resultStudents - Students array inside CSV file.
  * @returns {null|Object[]} - Grades passed on the CSV file.
@@ -68,6 +70,7 @@ function getGrades(isStudentsCsvInvalid, resultStudents) {
 }
 /**
  * Verify if manager email contains unl domain.
+ * Variable in UI Designer - <b>isManagerEmailIncorrect</b>
  * @param  {string} managerEmail - Institutional email of the degree manager.
  * @returns {boolean} - if manager email does not contains unl domain returns true else false;
  */
@@ -82,9 +85,24 @@ function isManagerEmailIncorrect(managerEmail) {
 
   return false;
 }
+/**
+ * Verify if the student rate is a valid number.
+ * @param  {number} rate
+ * @returns {boolean} if rate is a valid number returns true else false.
+ */
+function verifyCorrectRate(rate) {
+  if (!rate) {
+    return false;
+  }
+
+  const currentRate = Number(rate);
+
+  return !Number.isNaN(currentRate);
+}
 
 module.exports = {
   areDatesWrong,
   getGrades,
   isManagerEmailIncorrect,
+  verifyCorrectRate,
 };
